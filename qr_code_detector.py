@@ -1,0 +1,55 @@
+import cv2
+import os
+
+# Configuration
+INPUT_FOLDER = "qr_code_images"  # Folder where original images are stored
+OUTPUT_FOLDER = "cropped_qr_codes"  # Folder to store cropped QR codes
+IMAGE_NAME = "generated_qr_image.png"  # Name of the image to process
+INPUT_IMAGE_PATH = os.path.join(INPUT_FOLDER, IMAGE_NAME)
+OUTPUT_IMAGE_PATH = os.path.join(OUTPUT_FOLDER, "qr_1.png")
+
+def detect_and_crop_qr(image_path, output_path):
+    """Detects a single QR code in an image, crops it, and saves it."""
+
+    # Load the image
+    image = cv2.imread(image_path)
+    if image is None:
+        print(f"❌ Error: Could not load image {image_path}")
+        return False
+
+    # Convert image to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Initialize OpenCV's QR Code Detector
+    qr_detector = cv2.QRCodeDetector()
+
+    # Detect QR code
+    retval, points = qr_detector.detect(gray)
+
+    if retval and points is not None:
+        points = points.astype(int)
+
+        # Extract bounding box coordinates
+        x_min = min(points[0][:, 0])
+        x_max = max(points[0][:, 0])
+        y_min = min(points[0][:, 1])
+        y_max = max(points[0][:, 1])
+
+        # Crop the QR code from the image
+        cropped_qr = image[y_min:y_max, x_min:x_max]
+
+        # Create output directory if not exists
+        os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+
+        # Save cropped QR code
+        cv2.imwrite(output_path, cropped_qr)
+        print(f"✅ Cropped QR code saved as {output_path}")
+        return True
+
+    else:
+        print("❌ No QR code detected.")
+        return False
+
+# Run QR code detection and cropping
+if __name__ == "__main__":
+    detect_and_crop_qr(INPUT_IMAGE_PATH, OUTPUT_IMAGE_PATH)

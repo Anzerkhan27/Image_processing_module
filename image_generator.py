@@ -2,14 +2,14 @@ import cv2
 import numpy as np
 import random
 import os
-from PIL import Image
 
 # Configuration
 BACKGROUND_SIZE = (800, 800)  # (width, height)
 QR_CODE_SIZE = (150, 150)  # Resize QR codes to fit
 QR_IMAGES_FOLDER = "qr_dataset"  # Folder where QR codes are stored
-OUTPUT_IMAGE = "generated_qr_image.png"
-NUM_QR_CODES = 5  # Number of QR codes to place
+OUTPUT_FOLDER = "qr_code_images"  # Folder to store generated images
+OUTPUT_IMAGE = os.path.join(OUTPUT_FOLDER, "generated_qr_image.png")
+NUM_QR_CODES = 1  # Number of QR codes to place
 
 def load_qr_images(folder, num_qr):
     """Load random QR images from the dataset folder."""
@@ -22,6 +22,10 @@ def load_qr_images(folder, num_qr):
 
 def generate_qr_image():
     """Generate an image with multiple QR codes placed randomly on a background."""
+    
+    # Create the output folder if it doesn't exist
+    os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+
     # Create a blank white background
     background = np.ones((BACKGROUND_SIZE[1], BACKGROUND_SIZE[0], 3), dtype=np.uint8) * 255
     

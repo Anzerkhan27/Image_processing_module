@@ -291,3 +291,235 @@ Additionally, a separate **analog camera provides telemetry via video feed**, wh
 
 ---
 💡 *This document will be expanded with technical details as development progresses.*
+
+
+
+# 📜 QR Code Image Generator – Brief Documentation
+
+## 📝 Overview
+This script generates an **image with a randomly placed QR code** on a blank white background. It is useful for testing **QR code detection and recognition algorithms**.
+
+## 🛠️ Functionality
+- Loads a **random QR code** from the `qr_dataset/` directory.
+- Resizes the QR code to a **fixed dimension (150x150 pixels)**.
+- Places the QR code **randomly** on an **800x800 pixel** white background.
+- Ensures **QR codes do not overlap**.
+- Saves the generated image to the **`qr_code_images/`** folder as `generated_qr_image.png`.
+
+## 📂 File Structure
+```
+qr_code_images/      # Folder for generated images
+qr_dataset/          # Folder containing QR code images
+image_generator.py   # This script
+```
+
+## 🚀 How to Use
+1. Place QR code images in `qr_dataset/`.
+2. Run the script:
+   ```bash
+   python image_generator.py
+   ```
+3. The generated image will be saved in `qr_code_images/generated_qr_image.png`.
+
+## 🔜 Future Improvements
+- Support for **multiple QR codes** in one image.
+- Option to **vary background colors**.
+- Enhanced positioning to **prevent QR code clipping**.
+
+💡 **This script provides a quick way to generate QR code test images for machine vision applications! 🚀**
+
+---
+
+# 📜 QR Code Detector – Code Explanation
+
+## 📝 1. Introduction
+This script is a **simple QR code detector** that:
+- **Detects a single QR code** in an image.
+- **Draws a bounding box** around the detected QR code.
+- **Prints the bounding box coordinates** in the console.
+
+The program **uses OpenCV’s built-in `QRCodeDetector()`** for quick and efficient QR code detection.
+
+---
+
+## 📂 2. Project Structure
+```
+qr_code_detector.py
+qr_code_images/
+   ├── generated_qr_image.png
+qr_dataset/  # (Contains QR codes used for generating test images)
+```
+- `qr_code_detector.py` → Contains the QR code detection logic.
+- `qr_code_images/` → Stores test images for detection.
+- `qr_dataset/` → (Optional) Stores QR codes for generating test data.
+
+---
+
+## 🛠️ 3. Code Breakdown
+
+### **🔹 Importing Required Libraries**
+```python
+import cv2
+import os
+```
+- **cv2 (OpenCV)** → Used for **image processing and QR code detection**.
+- **os** → Handles **file paths**.
+
+---
+
+### **🔹 Configuring Image Paths**
+```python
+INPUT_FOLDER = "qr_code_images"
+IMAGE_NAME = "generated_qr_image.png"
+INPUT_IMAGE_PATH = os.path.join(INPUT_FOLDER, IMAGE_NAME)
+```
+- **Defines the folder (`qr_code_images/`)** where test images are stored.
+- **Creates the full path to the test image**.
+
+---
+
+### **🔹 Defining the QR Code Detection Function**
+```python
+def detect_qr_code(image_path):
+```
+This function:
+1. **Loads the input image**.
+2. **Detects a QR code** using OpenCV.
+3. **Draws a bounding box** around the detected QR code.
+4. **Prints the QR code's coordinates**.
+
+---
+
+### **🔹 Loading the Image**
+```python
+image = cv2.imread(image_path)
+if image is None:
+    print(f"❌ Error: Could not load image {image_path}")
+    return
+```
+- **`cv2.imread(image_path)`** → Reads the image.
+- If **image is missing or unreadable**, it **displays an error and exits**.
+
+---
+
+### **🔹 Converting Image to Grayscale**
+```python
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+```
+- QR codes are **black-and-white patterns**, so we **convert the image to grayscale** for better detection.
+
+---
+
+### **🔹 Initializing OpenCV’s QR Code Detector**
+```python
+qr_detector = cv2.QRCodeDetector()
+```
+- This **creates an instance** of OpenCV’s **QR code detector**.
+
+---
+
+### **🔹 Detecting a QR Code**
+```python
+retval, points = qr_detector.detect(gray)
+```
+- **`retval` (Boolean)** → `True` if a QR code is detected, `False` otherwise.
+- **`points` (NumPy array)** → Contains **coordinates of the QR code’s four corners**.
+
+---
+
+### **🔹 Processing Detected QR Codes**
+```python
+if retval and points is not None:
+    points = points.astype(int)  # Convert floating-point coordinates to integers
+```
+- If **a QR code is detected**, we:
+  - Convert its **coordinates from floating-point to integers** (necessary for drawing).
+
+---
+
+### **🔹 Printing QR Code Coordinates**
+```python
+print("✅ QR Code detected with coordinates:")
+for i, point in enumerate(points[0]):
+    print(f"Point {i+1}: {tuple(point)}")
+```
+- **Each coordinate is printed in `(x, y)` format**.
+- Example **console output**:
+  ```
+  ✅ QR Code detected with coordinates:
+  Point 1: (120, 300)
+  Point 2: (250, 300)
+  Point 3: (250, 450)
+  Point 4: (120, 450)
+  ```
+
+---
+
+### **🔹 Drawing the Bounding Box**
+```python
+for i in range(4):
+    cv2.line(image, tuple(points[0][i]), tuple(points[0][(i + 1) % 4]), (0, 255, 0), 3)
+```
+- **Loops through all 4 corner points**.
+- **Draws green lines** between them to form a bounding box.
+
+---
+
+### **🔹 Displaying the Image**
+```python
+cv2.imshow("QR Code Detection", image)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+- **`cv2.imshow()`** → Displays the processed image.
+- **`cv2.waitKey(0)`** → Waits for a key press before closing.
+- **`cv2.destroyAllWindows()`** → Closes all OpenCV windows.
+
+---
+
+### **🔹 Running the Script**
+```python
+if __name__ == "__main__":
+    detect_qr_code(INPUT_IMAGE_PATH)
+```
+- This ensures the script **only runs when executed directly** (not when imported).
+
+---
+
+## 🎯 4. How to Use
+1. **Ensure the test image exists** at:
+   ```
+   qr_code_images/generated_qr_image.png
+   ```
+2. **Run the script**:
+   ```bash
+   python qr_code_detector.py
+   ```
+3. **Check the console** for QR code coordinates.
+4. **See the output image** with a **green bounding box** around the QR code.
+
+---
+
+## 🔥 5. Example Output
+### **✅ Console Output**
+```
+✅ QR Code detected with coordinates:
+Point 1: (120, 300)
+Point 2: (250, 300)
+Point 3: (250, 450)
+Point 4: (120, 450)
+```
+### **🖼️ Image Output**
+✔ The detected QR code will be **highlighted with a green bounding box**.
+
+---
+
+## 🔜 6. Next Steps
+- **Improve detection for multiple QR codes**.
+- **Enhance robustness** for different lighting conditions.
+- **Add QR code decoding** to extract embedded information.
+
+---
+
+💡 **This is the simplest yet effective OpenCV QR code detector! 🚀🔥**
+```
