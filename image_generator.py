@@ -4,12 +4,12 @@ import random
 import os
 
 # Configuration
-BACKGROUND_SIZE = (800, 800)  # (width, height)
+BACKGROUND_SIZE = (600, 600)  # (width, height)
 QR_CODE_SIZE = (150, 150)  # Resize QR codes to fit
 QR_IMAGES_FOLDER = "qr_dataset"  # Folder where QR codes are stored
 OUTPUT_FOLDER = "qr_code_images"  # Folder to store generated images
 OUTPUT_IMAGE = os.path.join(OUTPUT_FOLDER, "generated_qr_image.png")
-NUM_QR_CODES = 1  # Number of QR codes to place
+NUM_QR_CODES = 5  # Number of QR codes to place
 
 def load_qr_images(folder, num_qr):
     """Load random QR images from the dataset folder."""
