@@ -4,13 +4,13 @@ import os
 # Configuration
 INPUT_FOLDER = "qr_code_images"  # Folder where original images are stored
 OUTPUT_FOLDER = "cropped_qr_codes"  # Folder to store cropped QR codes
-IMAGE_NAME = "generated_qr_image.png"  # Name of the image to process
+IMAGE_NAME = "test.jpg"  # Name of the image to process
 INPUT_IMAGE_PATH = os.path.join(INPUT_FOLDER, IMAGE_NAME)
 OUTPUT_IMAGE_PATH = os.path.join(OUTPUT_FOLDER, "qr_1.png")
 MARGIN = 10  # Extra pixels to add around the cropped QR code
 
 def detect_and_crop_qr(image_path, output_path, margin=MARGIN):
-    """Detects a single QR code in an image, crops it with margin, and saves it."""
+    """Detects a single QR code in an image, crops it with margin, prints its size, and saves it."""
 
     # Load the image
     image = cv2.imread(image_path)
@@ -38,6 +38,12 @@ def detect_and_crop_qr(image_path, output_path, margin=MARGIN):
 
         # Crop the QR code from the image with margin
         cropped_qr = image[y_min:y_max, x_min:x_max]
+
+        # Get dimensions of cropped QR code
+        height, width = cropped_qr.shape[:2]
+
+        # Print size of cropped QR code
+        print(f"📏 Cropped QR code size: {width}x{height} pixels")
 
         # Create output directory if not exists
         os.makedirs(OUTPUT_FOLDER, exist_ok=True)

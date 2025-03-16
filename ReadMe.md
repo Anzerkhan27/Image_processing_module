@@ -168,11 +168,10 @@ As a **Software Engineer** on **Team Ray**, here are your biggest constraints:
 
 ### **Clarifying Image Capture & QR Code Scanning Process**
 
-From the **Airbus Statement of Work**, here’s how the **image capture and QR scanning process works** in the **Olympus Rover Trials (ORT) 24-25):**
 
 ---
 
-### **📸 1. How Do We Capture and Submit Images?**
+### **📸 1. Image Capture and Submission**
 ✅ **Your rover must take images of QR codes placed on rocks** at each **Point of Interest (POI)**.  
 ✅ You **must submit a single image per site** (max 5 images for 5 sites).  
 ✅ The images must be **submitted before the 30-minute time limit ends**.  
@@ -181,7 +180,7 @@ From the **Airbus Statement of Work**, here’s how the **image capture and QR s
 
 ---
 
-### **📡 2. How Are the QR Codes Scored?**
+### **📡 2. Scoring**
 Each **Point of Interest (rock)** has **multiple QR codes of different sizes**.  
 - 🟢 **Smaller QR codes = More Points**  
 - 🔴 **Some QR codes are corrupted (decoys) and cannot be scanned**  
@@ -193,8 +192,8 @@ Each **Point of Interest (rock)** has **multiple QR codes of different sizes**.
 
 ---
 
-### **🤖 3. Do We Scan the QR Codes Ourselves or Do the Judges Scan Them?**
-You **can either**:
+### **🤖 3. Scanning**
+We **can either**:
 1. **Submit just the image**, and the **competition judges** will scan the QR codes from your submission.
 2. **Scan the QR codes yourself**, extract the information, and submit the **extracted rock composition data** with the image.
 
@@ -202,7 +201,7 @@ You **can either**:
 
 ---
 
-### **🔬 4. Where Do We Get the Rock Composition Data?**
+### **🔬 4. Rock Composition Data?**
 The **useful QR codes** contain **scientific rock composition data**.  
 - When scanned, they **reveal geological details about the rock**.  
 - Your goal is to **extract this data** and submit it for additional points.  
@@ -218,7 +217,7 @@ If your software can **autonomously scan and extract the QR code data**, you can
 4. **Submit both the image and the extracted data to ensure full scoring.**  
 
 ---
-### **📸 Understanding QR Code Placement on Each Rock (POI)**  
+### **📸 QR Code Placement on Each Rock (POI)**  
 
 Each **Point of Interest (POI)** (a rock) will have **multiple QR codes** arranged on its **different faces**.  
 
@@ -228,7 +227,7 @@ Each **Point of Interest (POI)** (a rock) will have **multiple QR codes** arrang
 
 ---
 
-### **📌 How Many QR Codes Are in Each Image?**
+### **📌 Multiple QR codes in an Image?**
 ✅ Your rover **must take an image of the rock** where **as many QR codes as possible are visible**.  
 ✅ Ideally, you want **all QR codes in a single image**, but due to **angles and terrain**, you may need to **adjust the rover’s position**.  
 ✅ The competition **does not specify an exact number of QR codes per rock**, but each POI **will have multiple QR codes to choose from**.  
@@ -242,14 +241,6 @@ Each **Point of Interest (POI)** (a rock) will have **multiple QR codes** arrang
 - If multiple QR codes are visible in the image, **judges will attempt to scan any one of them**.  
 
 ---
-
-### **🎯 What’s the Best Strategy?**
-- **Capture images where multiple QR codes are visible** in a **single shot** (to increase your chances of a successful scan).  
-- **Ensure high image clarity**—blurred or obstructed QR codes **won’t be scannable**.  
-- **If possible, scan the QR codes yourself and extract rock composition data** before submitting.  
-
-📌 **Final Takeaway:**  
-**Each image should contain as many QR codes as possible, but you only need to extract and submit the smallest one that scans successfully!** 🚀
 
 
 # 📸 Image Processing Module – Overview
@@ -523,3 +514,172 @@ Point 4: (120, 450)
 
 💡 **This is the simplest yet effective OpenCV QR code detector! 🚀🔥**
 ```
+
+
+```
+# 📜 Sliding Window QR Code Detector – README
+
+## 📌 Overview
+This script detects **multiple QR codes** in an image using the **Sliding Window Approach**.  
+Since OpenCV’s built-in `detectMulti()` is unreliable, this method:
+- **Slides a window** across the image.
+- **Detects QR codes** within each window.
+- **Marks detected QR codes** with bounding boxes.
+
+---
+
+## 🛠️ How It Works
+1️⃣ **Define a Window Size (`200x200px`)**  
+2️⃣ **Move the Window in Steps (`stride = 50px`)**  
+3️⃣ **Apply `QRCodeDetector().detect()` on Each Window**  
+4️⃣ **Store Detected QR Codes & Avoid Duplicates**  
+5️⃣ **Draw Bounding Boxes Around QR Codes**  
+
+---
+
+## 📂 Project Structure
+```
+qr_code_images/               # Folder containing input images
+sliding_window_qr_detector.py # This script
+```
+
+---
+
+## 🚀 Installation & Setup
+### **1️⃣ Install Dependencies**
+Ensure you have **OpenCV** and **NumPy** installed:
+```bash
+pip install opencv-python numpy
+```
+
+### **2️⃣ Place the Image**
+Save an image with multiple QR codes in:
+```
+qr_code_images/generated_qr_image.png
+```
+
+### **3️⃣ Run the Detector**
+Execute the script:
+```bash
+python sliding_window_qr_detector.py
+```
+
+---
+
+## 🎯 Expected Output
+- ✅ **Console Debugging Info**
+```
+🔍 Detected QR Code at (50, 250) - Points Shape: (4, 2)
+🔍 Detected QR Code at (300, 400) - Points Shape: (4, 2)
+```
+- 🖼 **Displayed Image**
+  - Green **bounding boxes** around detected QR codes.
+
+---
+
+## ⚙️ Configuration
+| Parameter      | Description                           | Default Value |
+|---------------|--------------------------------------|--------------|
+| `WINDOW_SIZE` | Size of the sliding window (pixels)  | `200`        |
+| `STRIDE`      | Step size for moving the window      | `50`         |
+
+You can **adjust `WINDOW_SIZE` & `STRIDE`** in `sliding_window_qr_detector.py`  
+```python
+WINDOW_SIZE = 200  # Change to adjust detection area
+STRIDE = 50        # Change to adjust scanning speed
+```
+
+---
+
+## 🔬 Limitations & Improvements
+❌ **Duplicate Detections** → We can improve by clustering results.  
+❌ **Speed Optimization** → Can be parallelized for faster detection.  
+✅ **Rotation Handling** → Can be improved with adaptive thresholding.  
+
+---
+
+## 🔥 Next Steps
+- 📌 **Optimize window size dynamically** based on QR code size.
+- 📌 **Filter duplicate detections** for cleaner results.
+- 📌 **Enhance scanning for rotated QR codes**.
+
+💡 **This script provides a powerful yet simple way to detect multiple QR codes! 🚀🔥**
+```
+
+
+```
+# 📜 QR Code Scanner – README
+
+## 📌 Overview
+This script **scans all QR codes** in a specified folder and prints their content. It uses **OpenCV’s `QRCodeDetector()`** to detect and decode QR codes in images.
+
+---
+
+## 🛠️ How It Works
+1️⃣ **Loads all QR code images** from the folder (`qr_dataset/`).  
+2️⃣ **Uses OpenCV’s `QRCodeDetector().detectAndDecode()`** to read the QR codes.  
+3️⃣ **Prints the decoded content** for each detected QR code.  
+
+---
+
+## 📂 Project Structure
+```
+qr_dataset/         # Folder containing QR code images
+qr_code_scanner.py  # This script
+```
+
+---
+
+## 🚀 How to Use
+1️⃣ **Ensure you have OpenCV installed**  
+   ```bash
+   pip install opencv-python
+   ```
+2️⃣ **Place QR code images inside `qr_dataset/`**  
+3️⃣ **Run the script**  
+   ```bash
+   python qr_code_scanner.py
+   ```
+
+---
+
+## 🎯 Expected Output
+- ✅ **If QR code is detected:**
+  ```
+  ✅ QR Code detected in 'qr_1.png'! Content: https://example.com
+  ✅ QR Code detected in 'qr_2.jpg'! Content: 12345-67890
+  ```
+- ❌ **If no QR code is found:**
+  ```
+  ❌ No QR code detected in 'qr_3.png' or could not be decoded.
+  ```
+
+---
+
+## ⚙️ Configuration
+| Parameter     | Description                         | Default Value  |
+|--------------|-------------------------------------|---------------|
+| `INPUT_FOLDER` | Folder containing QR images      | `qr_dataset/` |
+
+Modify this in `qr_code_scanner.py` if needed:
+```python
+INPUT_FOLDER = "qr_dataset"  # Change to your folder path
+```
+
+---
+
+## 🔬 Limitations & Improvements
+❌ **Blurred or low-quality images may fail to scan.**  
+✅ **Can be extended to log results in a file.**  
+✅ **Can be modified to scan from live webcam feed.**  
+
+---
+
+## 🔥 Next Steps
+- 📌 **Improve scanning accuracy** for noisy images.
+- 📌 **Log QR scan results into a text file or database.**
+- 📌 **Allow real-time scanning from video feeds.**
+
+💡 **This script provides a simple and efficient way to batch scan QR codes! 🚀🔥**
+```
+
