@@ -49,7 +49,6 @@ if option == "Generate QR Image":
             mime="image/png"
         )
 
-# New clean version
 elif option == "Scan Uploaded Image":
     st.subheader("📤 Upload an Image with QR Codes")
     uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
@@ -68,22 +67,54 @@ elif option == "Scan Uploaded Image":
         results = decode(image)
 
         if results:
-            for obj in results:
-                # ✅ Draw rectangle using rect
-                x, y, w, h = obj.rect
-                cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 3)
+            decoded_results = []
+            smallest_area = None
+            smallest_obj = None
 
-            # Convert processed image to RGB for Streamlit
+            for obj in results:
+                x, y, w, h = obj.rect
+                area = w * h
+
+                # Decode if possible
+                qr_content = obj.data.decode('utf-8')
+                decoded_results.append((qr_content, x, y, w, h, area))
+
+                # Find smallest scannable QR code
+                if (smallest_area is None) or (area < smallest_area):
+                    smallest_area = area
+                    smallest_obj = (x, y, w, h)
+
+            # Draw bounding boxes
+            for qr_content, x, y, w, h, area in decoded_results:
+                if (x, y, w, h) == smallest_obj:
+                    color = (255, 0, 255)  # Pink for smallest
+                else:
+                    color = (0, 255, 0)    # Green for normal
+
+                cv2.rectangle(image, (x, y), (x + w, y + h), color, 3)
+
+            # Convert processed image to RGB
             processed_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-            # ✅ Show only the processed image
+            # Show the processed image
             st.image(processed_image, caption="Processed Image with QR Codes", use_container_width=True)
 
-            # Show decoded QR data
+            # Show Diagnostics
+            st.subheader("📋 Diagnostics:")
+            st.info(f"🔹 Total QR Codes Found: {len(results)}")
+            st.info(f"🔹 Total Scannable QR Codes: {len(decoded_results)}")
+
+            # Show the smallest QR Code content
+            if decoded_results:
+                smallest_qr = min(decoded_results, key=lambda x: x[5])  # x[5] is area
+                st.success(f"🌸 Smallest QR Code Content: {smallest_qr[0]}")
+            else:
+                st.warning("❌ No scannable QR codes found.")
+
+            # Optional: Show all decoded QR codes
             st.subheader("🔍 Detected QR Codes:")
-            for obj in results:
-                st.success(f"Decoded: {obj.data.decode('utf-8')}")
+            for qr_content, _, _, _, _, _ in decoded_results:
+                st.success(f"Decoded: {qr_content}")
 
         else:
-            st.warning("❌ No QR codes decoded by Pyzbar.")
-
+            st.warning("❌ No QR codes detected.")
