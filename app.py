@@ -49,33 +49,41 @@ if option == "Generate QR Image":
             mime="image/png"
         )
 
+# New clean version
 elif option == "Scan Uploaded Image":
     st.subheader("📤 Upload an Image with QR Codes")
     uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
+    
     if uploaded_file:
         # Save uploaded image to disk
         uploaded_path = os.path.join("temp_upload.png")
         with open(uploaded_path, "wb") as f:
             f.write(uploaded_file.read())
-            st.image(uploaded_path, caption="Uploaded Image", use_container_width=True)
-      
-        st.markdown("---")
-        st.subheader("🔍 Detected QR Codes")
 
-        # Pyzbar decoding
-        st.text("Pyzbar Decoding:")
+        # Load uploaded image
         image = cv2.imread(uploaded_path)
         from pyzbar.pyzbar import decode
+        
+        # Detect QR codes
         results = decode(image)
+
         if results:
             for obj in results:
+                # ✅ Draw rectangle using rect
+                x, y, w, h = obj.rect
+                cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 3)
+
+            # Convert processed image to RGB for Streamlit
+            processed_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+            # ✅ Show only the processed image
+            st.image(processed_image, caption="Processed Image with QR Codes", use_container_width=True)
+
+            # Show decoded QR data
+            st.subheader("🔍 Detected QR Codes:")
+            for obj in results:
                 st.success(f"Decoded: {obj.data.decode('utf-8')}")
+
         else:
             st.warning("❌ No QR codes decoded by Pyzbar.")
 
-        # --- Commenting out OpenCV fallback for now ---
-        # st.text("OpenCV Detection:")
-        # processor.scan_qr_image(uploaded_path)
-
-
-       
