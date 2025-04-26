@@ -71,8 +71,11 @@ elif option == "Scan Uploaded Image":
             for obj in results:
                 st.success(f"Decoded: {obj.data.decode('utf-8')}")
         else:
-            st.warning("No QR codes decoded by Pyzbar.")
+            st.warning("❌ No QR codes decoded by Pyzbar.")
 
-        # OpenCV fallback
-        st.text("OpenCV Detection:")
-        processor.scan_qr_image(uploaded_path)
+        # --- Commenting out OpenCV fallback for now ---
+        # st.text("OpenCV Detection:")
+        # processor.scan_qr_image(uploaded_path)
+
+
+       
