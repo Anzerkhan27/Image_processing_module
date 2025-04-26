@@ -5,6 +5,7 @@ import os
 import cv2
 import numpy as np
 from PIL import Image
+import io  # NEW IMPORT for in-memory file
 from image_processing.config import CONFIG
 from image_processing.qr_generator import QRGenerator
 from image_processing.image_processor import ImageProcessor
@@ -23,8 +24,30 @@ if option == "Generate QR Image":
     if st.button("Generate Image"):
         generator.generate_random()
         img_path = CONFIG["output_image"]
+
+        # Show generated image
         st.image(img_path, caption="Generated QR Image")
         st.success("QR Image generated and displayed above!")
+
+        # ✅ ADD THIS: Enable download of generated QR image
+        # Read the image back
+        generated_image = cv2.imread(img_path)
+        # Convert BGR to RGB
+        generated_image = cv2.cvtColor(generated_image, cv2.COLOR_BGR2RGB)
+        # Convert to PIL image
+        pil_image = Image.fromarray(generated_image)
+        # Save to in-memory file
+        buf = io.BytesIO()
+        pil_image.save(buf, format="PNG")
+        byte_im = buf.getvalue()
+
+        # Streamlit download button
+        st.download_button(
+            label="📥 Download Generated QR Code",
+            data=byte_im,
+            file_name="generated_qr_code.png",
+            mime="image/png"
+        )
 
 elif option == "Scan Uploaded Image":
     st.subheader("📤 Upload an Image with QR Codes")
