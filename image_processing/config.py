@@ -5,7 +5,7 @@ CONFIG = {
     "qr_code_size": (150, 150),                 # Fixed size for QR code (used in fixed generator)
     "qr_min_size": 100,                         # Minimum size for random QR codes
     "qr_max_size": 200,                         # Maximum size for random QR codes
-    "qr_images_folder": "assets/qr_dataset",           # Folder containing original QR images
+    "qr_images_folder": "qr_dataset",           # Folder containing original QR images
     "output_folder": "qr_code_images",          # Output folder for generated images
     "output_image": "qr_code_images/generated_qr_image.png",  # Final output path
     "num_qr_codes": 8,                          # Number of QR codes to generate
