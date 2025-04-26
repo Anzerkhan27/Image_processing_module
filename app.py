@@ -57,8 +57,8 @@ elif option == "Scan Uploaded Image":
         uploaded_path = os.path.join("temp_upload.png")
         with open(uploaded_path, "wb") as f:
             f.write(uploaded_file.read())
-        st.image(uploaded_path, caption="Uploaded Image", use_column_width=True)
-
+            st.image(uploaded_path, caption="Uploaded Image", use_container_width=True)
+      
         st.markdown("---")
         st.subheader("🔍 Detected QR Codes")
 
