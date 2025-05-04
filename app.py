@@ -1,16 +1,20 @@
 # app.py
 
-print("✅ Streamlit server booting...")
 
-import streamlit as st
-import os
-import cv2
-import numpy as np
-from PIL import Image
-import io  # For in-memory download
-from image_processing.config import CONFIG
-from image_processing.qr_generator import QRGenerator
-from image_processing.image_processor import ImageProcessor
+try:
+    import streamlit as st
+    import os
+    import cv2
+    import numpy as np
+    from PIL import Image
+    import io  # For in-memory download
+    from image_processing.config import CONFIG
+    from image_processing.qr_generator import QRGenerator
+    from image_processing.image_processor import ImageProcessor
+
+    print("✅ Streamlit server booting...")
+except Exception as e:
+    print(f" Failed at import-time: {e}")
 
 # --- Title ---
 st.title("Team Ray – QR Code Generator & Scanner 🚀")
