@@ -1,5 +1,7 @@
 # app.py
 
+print("✅ Streamlit server booting...")
+
 import streamlit as st
 import os
 import cv2
