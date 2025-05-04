@@ -168,6 +168,5 @@ streamlit run app.py
 
 *This repository is proudly maintained as part of the Mars Rover mission by Team Ray. Built with clarity, purpose, and space-grade ambition.* 🚀
 
-```
 
 

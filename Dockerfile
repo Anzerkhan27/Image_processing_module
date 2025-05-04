@@ -17,8 +17,8 @@ COPY . /app
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the Streamlit default port
-EXPOSE 8501
+# Expose Railway-compatible port
+EXPOSE 8000
 
-# Run Streamlit app
-CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# Run Streamlit on Railway's expected port
+CMD ["streamlit", "run", "app.py", "--server.port=8000", "--server.address=0.0.0.0"]
