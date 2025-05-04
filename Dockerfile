@@ -21,4 +21,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8000
 
 # Run Streamlit on Railway's expected port
-CMD ["streamlit", "run", "app.py", "--server.port=8000", "--server.address=0.0.0.0"]
+CMD ["sh", "-c", "ls -l && pwd && streamlit run app.py --server.port=8000 --server.address=0.0.0.0"]
