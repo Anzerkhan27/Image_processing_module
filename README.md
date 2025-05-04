@@ -6,7 +6,7 @@ Welcome to the **QR Code Detection & Image Processing Module** for **Team Ray**,
 This codebase powers the **AI-driven vision system** for our Mars Rover prototype. It simulates how the rover detects, decodes, and prioritizes QR codes placed on Martian rocks at geological points of interest (POIs).
 
 > 📌 **Built & Maintained by:**  
-> 🧑‍💻 *Mohammad Anzer Khan* – Software Lead, Team Ray  
+> 🧑‍💻 *Anzer Khan* – Software Lead, Team Ray  
 > 🎓 *MSc Artificial Intelligence, University of Huddersfield*
 
 ---
@@ -37,6 +37,26 @@ The UKSEDS ORT simulates a **Mars pre-landing reconnaissance mission**. The rove
 This repository simulates the **AI-powered image processing** part of that workflow.
 
 ---
+
+
+
+## 🧪 Live Testing with Streamlit
+
+You can try out the interactive web app here:
+
+👉 **[Live Streamlit App – Try It Now](https://imageprocessingmodule-production.up.railway.app/)**
+
+To run locally:
+
+```bash
+streamlit run app.py
+
+```
+
+
+
+
+
 
 ## 🛠️ What’s in This Repo?
 
@@ -76,19 +96,6 @@ This repository simulates the **AI-powered image processing** part of that workf
    - Streamlit app allows team to test, visualize, and download results live
 
 ---
-
-
-## 🧪 Live Testing with Streamlit
-
-You can try out the interactive web app here:
-
-👉 **[Live Streamlit App – Try It Now](https://imageprocessingmodule-production.up.railway.app/)**
-
-To run locally:
-
-```bash
-streamlit run app.py
-
 
 
 
