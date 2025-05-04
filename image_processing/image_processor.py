@@ -1,3 +1,5 @@
+# image_processing/image_processor.py
+
 import cv2
 import os
 import numpy as np

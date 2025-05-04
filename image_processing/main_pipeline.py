@@ -1,3 +1,5 @@
+#image_processing/main_pipeline.py
+
 from image_processing.config import CONFIG
 from image_processing.qr_generator import QRGenerator
 from image_processing.image_processor import ImageProcessor

@@ -1,3 +1,5 @@
+# image_processing/qr_generator.py
+
 import cv2
 import os
 import random
