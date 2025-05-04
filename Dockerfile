@@ -12,10 +12,6 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-
-
-
-
 # Set working directory inside the container
 WORKDIR /app
 
@@ -25,8 +21,8 @@ COPY . /app
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose Railway-compatible port
-EXPOSE 8000
+# Set default port (Railway will override with $PORT)
+ENV PORT=8000
 
-# Run Streamlit on Railway's expected port
-CMD ["sh", "-c", "ls -l && pwd && streamlit run app.py --server.port=8000 --server.address=0.0.0.0"]
+# Run Streamlit using Railway's environment variable
+CMD ["sh", "-c", "ls -l && pwd && streamlit run app.py --server.port=$PORT --server.address=0.0.0.0"]
