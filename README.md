@@ -77,13 +77,20 @@ This repository simulates the **AI-powered image processing** part of that workf
 
 ---
 
+
 ## 🧪 Live Testing with Streamlit
 
-To launch the app:
+You can try out the interactive web app here:
+
+👉 **[Live Streamlit App – Try It Now](https://imageprocessingmodule-production.up.railway.app/)**
+
+To run locally:
 
 ```bash
 streamlit run app.py
-````
+
+
+
 
 ### ✅ Features:
 
