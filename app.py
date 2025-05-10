@@ -4,7 +4,6 @@ import cv2
 import numpy as np
 from PIL import Image
 import io
-import json
 from image_processing.config import CONFIG
 from image_processing.qr_generator import QRGenerator
 from image_processing.image_processor import ImageProcessor
@@ -23,9 +22,10 @@ def process_and_display_qr(image_path: str):
     """Detect and annotate QR codes, then display the image and diagnostics."""
     image = cv2.imread(image_path)
     from pyzbar.pyzbar import decode
-    results = decode(image)
 
+    results = decode(image)
     decoded_results = []
+
     if results:
         smallest_area = None
         smallest_obj = None
@@ -33,15 +33,15 @@ def process_and_display_qr(image_path: str):
         for obj in results:
             x, y, w, h = obj.rect
             area = w * h
-            qr_content = obj.data.decode('utf-8') if obj.data else None
+            qr_content = obj.data.decode("utf-8") if obj.data else None
             decoded_results.append((qr_content, x, y, w, h, area))
 
-            if (smallest_area is None) or (area < smallest_area):
+            if smallest_area is None or area < smallest_area:
                 smallest_area = area
                 smallest_obj = (x, y, w, h)
 
         # Draw bounding boxes
-        for content, x, y, w, h, area in decoded_results:
+        for content, x, y, w, h, _ in decoded_results:
             color = (255, 0, 255) if (x, y, w, h) == smallest_obj else (0, 255, 0)
             cv2.rectangle(image, (x, y), (x + w, y + h), color, 3)
 
@@ -59,7 +59,7 @@ def process_and_display_qr(image_path: str):
             st.warning("❌ No scannable QR codes found.")
 
         st.subheader("🔍 Detected QR Codes:")
-        for content, _, _, _, _, _ in decoded_results:
+        for content, *_ in decoded_results:
             st.success(f"Decoded: {content}")
     else:
         st.warning("❌ No QR codes detected.")
@@ -78,14 +78,16 @@ if option == "Generate QR Image":
         st.image(img_path, caption="Generated QR Image", use_container_width=True)
         st.success("✅ QR Image generated and displayed above!")
 
-        pil_img = Image.fromarray(cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB))
+        pil_img = Image.fromarray(
+            cv2.cvtColor(cv2.imread(img_path), cv2.COLOR_BGR2RGB)
+        )
         buf = io.BytesIO()
         pil_img.save(buf, format="PNG")
         st.download_button(
             label="📥 Download Generated QR Code",
             data=buf.getvalue(),
             file_name="generated_qr_code.png",
-            mime="image/png"
+            mime="image/png",
         )
 
     if "generated_image_path" in st.session_state:
@@ -97,7 +99,7 @@ if option == "Generate QR Image":
             # Generate structured report and display it
             report = processor.generate_poi_report(img_path, poi_id=1)
             st.subheader("🔖 Structured POI Report")
-            st.json(report.dict())
+            st.json(report.model_dump())
 
             # Save JSON report to disk
             reports_dir = "reports"
@@ -105,7 +107,7 @@ if option == "Generate QR Image":
             ts = report.timestamp.replace(":", "-")
             report_path = os.path.join(reports_dir, f"poi_{report.poi_id}_{ts}.json")
             with open(report_path, "w") as f:
-                f.write(report.json(indent=2))
+                f.write(report.model_dump_json(indent=2))
             st.success(f"✅ Report saved to `{report_path}`")
     else:
         st.info("ℹ️ Please generate an image first before scanning.")
@@ -127,7 +129,7 @@ elif option == "Scan Uploaded Image":
         # Generate structured report and display it
         report = processor.generate_poi_report(uploaded_path, poi_id=1)
         st.subheader("🔖 Structured POI Report")
-        st.json(report.dict())
+        st.json(report.model_dump())
 
         # Save JSON report to disk
         reports_dir = "reports"
@@ -135,5 +137,5 @@ elif option == "Scan Uploaded Image":
         ts = report.timestamp.replace(":", "-")
         report_path = os.path.join(reports_dir, f"poi_{report.poi_id}_{ts}.json")
         with open(report_path, "w") as f:
-            f.write(report.json(indent=2))
+            f.write(report.model_dump_json(indent=2))
         st.success(f"✅ Report saved to `{report_path}`")

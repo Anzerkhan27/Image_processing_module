@@ -1,0 +1,106 @@
+{
+  "poi_id": 1,
+  "timestamp": "2025-05-10T10:47:55.994614",
+  "image_name": "generated_qr_image.png",
+  "total_detected": 7,
+  "valid_qrs": [
+    {
+      "content": "1029",
+      "bbox": [
+        38,
+        133,
+        103,
+        104
+      ],
+      "area": 10712,
+      "is_valid": true,
+      "quality_score": null
+    },
+    {
+      "content": "1029",
+      "bbox": [
+        422,
+        295,
+        101,
+        101
+      ],
+      "area": 10201,
+      "is_valid": true,
+      "quality_score": null
+    },
+    {
+      "content": "1011",
+      "bbox": [
+        173,
+        63,
+        111,
+        111
+      ],
+      "area": 12321,
+      "is_valid": true,
+      "quality_score": null
+    },
+    {
+      "content": "1026",
+      "bbox": [
+        358,
+        438,
+        118,
+        118
+      ],
+      "area": 13924,
+      "is_valid": true,
+      "quality_score": null
+    },
+    {
+      "content": "1015",
+      "bbox": [
+        346,
+        60,
+        136,
+        136
+      ],
+      "area": 18496,
+      "is_valid": true,
+      "quality_score": null
+    },
+    {
+      "content": "1034",
+      "bbox": [
+        259,
+        248,
+        109,
+        109
+      ],
+      "area": 11881,
+      "is_valid": true,
+      "quality_score": null
+    },
+    {
+      "content": "1015",
+      "bbox": [
+        46,
+        319,
+        143,
+        143
+      ],
+      "area": 20449,
+      "is_valid": true,
+      "quality_score": null
+    }
+  ],
+  "corrupted_qrs": [],
+  "best_qr": {
+    "content": "1029",
+    "bbox": [
+      422,
+      295,
+      101,
+      101
+    ],
+    "area": 10201,
+    "is_valid": true,
+    "quality_score": null
+  },
+  "score_estimate": 55.1
+}
