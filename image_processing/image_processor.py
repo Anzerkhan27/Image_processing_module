@@ -4,6 +4,9 @@ import cv2
 import os
 import numpy as np
 from pyzbar.pyzbar import decode
+# At the top
+from datetime import datetime
+from image_processing.report_models import QRCodeModel, POIReportModel
 
 class ImageProcessor:
     def __init__(self, config):
@@ -117,3 +120,55 @@ class ImageProcessor:
             print(f"✅ Scanned '{os.path.basename(image_path)}': {data}")
         else:
             print(f"❌ No QR code decoded in '{os.path.basename(image_path)}'")
+
+
+
+
+# Add this new method inside the ImageProcessor class
+    def generate_poi_report(self, image_path: str, poi_id: int = 1) -> POIReportModel:
+        from pyzbar.pyzbar import decode
+
+        image = cv2.imread(image_path)
+        if image is None:
+            raise FileNotFoundError(f"Could not load image at {image_path}")
+
+        decoded = decode(image)
+        valid_qrs = []
+        corrupted_qrs = []
+
+        for obj in decoded:
+            x, y, w, h = obj.rect
+            area = w * h
+            content = obj.data.decode('utf-8') if obj.data else None
+            model = QRCodeModel(
+                content=content,
+                bbox=(x, y, w, h),
+                area=area,
+                is_valid=bool(content),
+                quality_score=None  # Optional: add sharpness later
+            )
+
+            if model.is_valid:
+                valid_qrs.append(model)
+            else:
+                corrupted_qrs.append(model)
+
+        best_qr = min(valid_qrs, key=lambda qr: qr.area, default=None)
+        score_estimate = 0.0
+        if best_qr:
+            max_area = max(qr.area for qr in valid_qrs)
+            score_estimate = round(10 + 90 * (1 - best_qr.area / max_area), 2) if max_area else 90.0
+
+        report = POIReportModel(
+            poi_id=poi_id,
+            timestamp=datetime.utcnow().isoformat(),
+            image_name=os.path.basename(image_path),
+            total_detected=len(decoded),
+            valid_qrs=valid_qrs,
+            corrupted_qrs=corrupted_qrs,
+            best_qr=best_qr,
+            score_estimate=score_estimate
+        )
+
+        return report
+

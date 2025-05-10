@@ -14,7 +14,9 @@ def run_pipeline():
     image_path = CONFIG["output_image"]
 
    # processor.detect_multi_qr_sliding(image_path)
-    processor.detect_with_pyzbar(image_path)
+   # processor.detect_with_pyzbar(image_path)
+    report = processor.generate_poi_report(image_path, poi_id=1)
+    print(report.json(indent=2))
     processor.scan_qr_image(image_path)
 
 if __name__ == "__main__":
