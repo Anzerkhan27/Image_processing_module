@@ -47,5 +47,6 @@ RUN which streamlit && \
     streamlit --version && \
     ls -ld /app/qr_*  # Verify directory permissions
 
-# Runtime command
-CMD ["streamlit", "run", "app.py", "--server.port=$PORT", "--server.address=0.0.0.0"]
+
+# ─── Runtime command ────────────────────────────────────────────────
+CMD ["sh", "-c", "streamlit run app.py --server.port $PORT --server.address 0.0.0.0"]
