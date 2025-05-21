@@ -47,6 +47,9 @@ RUN which streamlit && \
     streamlit --version && \
     ls -ld /app/qr_*  # Verify directory permissions
 
+# Tell Railway (and Docker) which port the app listens on
+EXPOSE 8080
+
 
 # ─── Runtime command ────────────────────────────────────────────────
 CMD ["sh", "-c", "streamlit run app.py --server.port $PORT --server.address 0.0.0.0"]
