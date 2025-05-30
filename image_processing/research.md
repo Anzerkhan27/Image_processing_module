@@ -171,3 +171,6 @@ ard **decoys or corrupted QR codes** before capturing an image.
 **Word Count (Approx.):** ~1,500 words
 
 This completes the draft text for your CDR’s Image Processing Module. Adjust headings or word counts as needed to integrate seamlessly with the rest of your Critical Design Review document. Good luck with finalizing your submission!
+
+
+
