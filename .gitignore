@@ -1,2 +1,6 @@
 venv/
 assets/
+qr_code_images/
+qr_dataset/
+test/output_images/
+

@@ -5,6 +5,8 @@ from test.processors.crop_center import crop_center
 from test.processors.enhance_clahe import enhance_image
 from test.processors.perspective_warp import detect_and_warp_qr
 from test.processors.detect_pyzbar import decode_qr
+from test.processors.opencv_qr_detector import decode_qr_opencv
+
 
 def draw_polygons(image, results):
     for r in results:
@@ -37,18 +39,29 @@ def main(img_path):
     else:
         print("[WARN] No contour found, fallback to ROI decoding.")
         results = decode_qr(enhanced)
-        if results:
-            # Adjust polygon points to full image coords
-            for r in results:
-                r["points"] = [(x + ox, y + oy) for (x, y) in r["points"]]
-            annotated_img = draw_polygons(annotated_img, results)
-
+            # Step 1: Try OpenCV on enhanced ROI
+    results = decode_qr_opencv(enhanced)
     if results:
+        print("[INFO] QR decoded using OpenCV.")
         for r in results:
-            print(f"[INFO] QR Found: {r['data']}")
-        save_image(annotated_img, "04_final_annotated.jpg")
+            r["points"] = [(x + ox, y + oy) for (x, y) in r["points"]]
+        annotated_img = draw_polygons(img.copy(), results)
     else:
-        print("[FAIL] QR still not decoded.")
+        # Step 2: Try perspective-warp + pyzbar
+        warped = detect_and_warp_qr(enhanced)
+        if warped is not None:
+            results = decode_qr(warped)
+            if results:
+                print("[INFO] QR decoded from warped image using pyzbar.")
+                annotated_img = warped.copy()
+        else:
+            print("[WARN] No contour found, fallback to pyzbar on ROI.")
+            results = decode_qr(enhanced)
+            if results:
+                for r in results:
+                    r["points"] = [(x + ox, y + oy) for (x, y) in r["points"]]
+                annotated_img = draw_polygons(img.copy(), results)
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
