@@ -1,5 +1,3 @@
-# scanner.py
-
 import os
 import cv2
 import json
@@ -48,10 +46,17 @@ def process_site_image(image_path, output_dir, site_name="unknown"):
     region_logs = []
     decoded_candidates = []
 
+    crops_dir = os.path.join(output_dir, "crops")
+    os.makedirs(crops_dir, exist_ok=True)
+
     for idx, det in enumerate(sorted_detections):
         bbox = det["bbox"]
         area = compute_area(bbox)
         crop = crop_with_margin(image, bbox)
+
+        # Save raw crop for visual logging / PDF
+        crop_path = os.path.join(crops_dir, f"qr_{idx+1:03}_raw.jpg")
+        cv2.imwrite(crop_path, crop)
 
         decoded_text, decoder = try_decoders(crop)
         if not decoded_text:
@@ -78,18 +83,16 @@ def process_site_image(image_path, output_dir, site_name="unknown"):
                 "crop": crop
             })
 
-    # Determine which to submit
+    # Determine which QR to submit
     if decoded_candidates:
         final = sorted(decoded_candidates, key=lambda d: d["area"])[0]
-        crop_out = os.path.join(output_dir, "qr_crop.jpg")
-        save_image(final["crop"], crop_out)
+        save_image(final["crop"], os.path.join(output_dir, "qr_crop.jpg"))
     else:
         fallback = sorted_detections[0]
         bbox = fallback["bbox"]
         area = compute_area(bbox)
         crop = crop_with_margin(image, bbox)
-        crop_out = os.path.join(output_dir, "qr_crop.jpg")
-        save_image(crop, crop_out)
+        save_image(crop, os.path.join(output_dir, "qr_crop.jpg"))
         final = {
             "index": 1,
             "bbox": bbox,
@@ -99,7 +102,7 @@ def process_site_image(image_path, output_dir, site_name="unknown"):
             "decoded": False
         }
 
-    # Annotate and save
+    # Annotate and save final image
     annotated = image.copy()
     x1, y1, x2, y2 = final["bbox"]
     label = final["data"] if final["decoded"] else "UNREADABLE"
