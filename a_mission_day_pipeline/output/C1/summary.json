@@ -1,0 +1,20 @@
+{
+  "site": "C1",
+  "total_detected": 1,
+  "submitted_qr_index": 1,
+  "regions": [
+    {
+      "index": 1,
+      "bbox": [
+        1073,
+        447,
+        1185,
+        566
+      ],
+      "area": 13328,
+      "decoded": true,
+      "data": "https://l.ead.me/benSAx",
+      "decoder": "pyzbar"
+    }
+  ]
+}
